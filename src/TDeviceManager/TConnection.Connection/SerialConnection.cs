@@ -83,12 +83,19 @@ public class SerialConnection : IConnection, ISerialConnection, IByteCommunicati
         _serialPort.Write(buffer, 0, buffer.Length);
     }
 
-    public byte[] ReadBytes(int timeout = 2000)
+    public byte[] ReadBytes()
     {
-        _serialPort.ReadTimeout = timeout;
         var existing = _serialPort.ReadExisting();
         var bytes = !string.IsNullOrEmpty(existing) ? Encoding.ASCII.GetBytes(existing) : Array.Empty<byte>();
         return bytes;
+    }
+
+    public byte[] ReadBytes(int length, int timeout)
+    {
+        _serialPort.ReadTimeout = timeout;
+        var buffer = new byte[length];
+        var count = _serialPort.Read(buffer, 0, length);
+        return buffer;
     }
 
     public byte[] ReadBytesToTermination(int timeout = 2000, byte terminationCharacter = 10)
@@ -100,10 +107,32 @@ public class SerialConnection : IConnection, ISerialConnection, IByteCommunicati
         return bytes;
     }
 
+    public byte[] SendAndReceivedBytes(byte[] buffer, int interval)
+    {
+        lock (_serialPort)
+        {
+            Write(buffer);
+            Thread.Sleep(interval);
+            return ReadBytes();
+        }
+    }
+
+    public byte[] SendAndReceivedBytesByLength(byte[] buffer, int length, int timeout = 2000)
+    {
+        lock (_serialPort)
+        {
+            Write(buffer);
+            return ReadBytes(length, timeout);
+        }
+    }
+
     public byte[] SendAndReceivedBytesToTermination(byte[] buffer, int timeout = 2000, byte terminationCharacter = 10)
     {
-        Write(buffer);
-        return ReadBytesToTermination(timeout, terminationCharacter);
+        lock (_serialPort)
+        {
+            Write(buffer);
+            return ReadBytesToTermination(timeout, terminationCharacter);
+        }
     }
 
     #endregion
@@ -115,9 +144,17 @@ public class SerialConnection : IConnection, ISerialConnection, IByteCommunicati
         _serialPort.Write(buffer);
     }
 
-    public string ReadString(int timeout = 2000)
+    public string ReadString()
     {
         return _serialPort.ReadExisting();
+    }
+
+    public string ReadString(int length, int timeout = 2000)
+    {
+        _serialPort.ReadTimeout = timeout;
+        var readBytes = ReadBytes(length, timeout);
+        var readString = Encoding.ASCII.GetString(readBytes);
+        return readString;
     }
 
     public string ReadStringToTermination(int timeout = 2000, char terminationCharacter = '\n')
@@ -125,10 +162,32 @@ public class SerialConnection : IConnection, ISerialConnection, IByteCommunicati
         return _serialPort.ReadTo(new string(new[] { terminationCharacter }));
     }
 
+    public string SendAndReceivedString(string buffer, int interval)
+    {
+        lock (_serialPort)
+        {
+            Write(buffer);
+            Thread.Sleep(interval);
+            return ReadString();
+        }
+    }
+
+    public string SendAndReceivedStringByLength(string buffer, int length, int timeout = 2000)
+    {
+        lock (_serialPort)
+        {
+            Write(buffer);
+            return ReadString(length, timeout);
+        }
+    }
+
     public string SendAndReceivedStringToTermination(string buffer, int timeout = 2000, char terminationCharacter = '\n')
     {
-        Write(buffer);
-        return ReadStringToTermination(timeout, terminationCharacter);
+        lock (_serialPort)
+        {
+            Write(buffer);
+            return ReadStringToTermination(timeout, terminationCharacter);
+        }
     }
 
     #endregion

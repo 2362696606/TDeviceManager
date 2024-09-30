@@ -11,8 +11,7 @@ public interface IDevice:IDisposable
     /// <summary>
     /// 连接
     /// </summary>
-    /// <returns></returns>
-    OperateResult Connect();
+    void Connect();
     /// <summary>
     /// 断开连接
     /// </summary>

@@ -48,6 +48,16 @@ namespace TConnection.Recorder.Yaml
         public void AddConfig(ConnectionConfig config)
         {
             this._configs.Add(config);
+        }
+
+        public void RemoveConfig(string configName)
+        {
+            var connectionConfig = this._configs.First(x => x.ConnectionName == configName);
+            this._configs.Remove(connectionConfig);
+        }
+
+        public void SaveConfigs()
+        {
             YamlHelper.SerializeToFile(_yamlFilePath, _configs);
         }
 

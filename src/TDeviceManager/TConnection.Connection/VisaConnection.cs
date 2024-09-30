@@ -1,4 +1,5 @@
 ﻿using NationalInstruments.Visa;
+using System.IO.Ports;
 using TConnection.Abstract;
 
 namespace TConnection.Connection;
@@ -22,7 +23,6 @@ public abstract class VisaConnection:IConnection,IByteCommunication, IStringComm
     protected MessageBasedSession? Session;
 
     #endregion
-
 
     #region 属性
 
@@ -82,12 +82,19 @@ public abstract class VisaConnection:IConnection,IByteCommunication, IStringComm
         Session.RawIO.Write(buffer);
     }
 
-    public virtual byte[] ReadBytes(int timeout = 2000)
+    public virtual byte[] ReadBytes()
     {
         ArgumentNullException.ThrowIfNull(Session,nameof(Session));
+        var bytes = Session.FormattedIO.ReadBinaryBlockOfByte();
+        return bytes;
+    }
+
+    public virtual byte[] ReadBytes(int length, int timeout = 2000)
+    {
+        ArgumentNullException.ThrowIfNull(Session, nameof(Session));
         Session.TimeoutMilliseconds = timeout;
-        var readBufferSize = Session.FormattedIO.ReadBufferSize;
-        var bytes = Session.RawIO.Read(readBufferSize);
+        var bytes = new byte[length];
+        Session.FormattedIO.ReadBinaryBlockOfByte(bytes, 0, length);
         return bytes;
     }
 
@@ -100,10 +107,35 @@ public abstract class VisaConnection:IConnection,IByteCommunication, IStringComm
         return bytes;
     }
 
+    public virtual byte[] SendAndReceivedBytes(byte[] buffer, int interval)
+    {
+        ArgumentNullException.ThrowIfNull(Session, nameof(Session));
+        lock (Session)
+        {
+            Write(buffer);
+            Thread.Sleep(interval);
+            return ReadBytes();
+        }
+    }
+
+    public byte[] SendAndReceivedBytesByLength(byte[] buffer, int length, int timeout = 2000)
+    {
+        ArgumentNullException.ThrowIfNull(Session, nameof(Session));
+        lock (Session)
+        {
+            Write(buffer);
+            return ReadBytes(length, timeout);
+        }
+    }
+
     public virtual byte[] SendAndReceivedBytesToTermination(byte[] buffer, int timeout = 2000, byte terminationCharacter = 10)
     {
-        Write(buffer);
-        return ReadBytesToTermination(timeout, terminationCharacter);
+        ArgumentNullException.ThrowIfNull(Session, nameof(Session));
+        lock (Session)
+        {
+            Write(buffer);
+            return ReadBytesToTermination(timeout, terminationCharacter);
+        }
     }
 
     public virtual void Write(string buffer)
@@ -112,12 +144,18 @@ public abstract class VisaConnection:IConnection,IByteCommunication, IStringComm
         Session.RawIO.Write(buffer);
     }
 
-    public virtual string ReadString(int timeout = 2000)
+    public virtual string ReadString()
+    {
+        ArgumentNullException.ThrowIfNull(Session, nameof(Session));
+        var readString = Session.FormattedIO.ReadString();
+        return readString;
+    }
+
+    public string ReadString(int length, int timeout = 2000)
     {
         ArgumentNullException.ThrowIfNull(Session, nameof(Session));
         Session.TimeoutMilliseconds = timeout;
-        var readBufferSize = Session.FormattedIO.ReadBufferSize;
-        var readString = Session.RawIO.ReadString(readBufferSize);
+        var readString = Session.FormattedIO.ReadString(length);
         return readString;
     }
 
@@ -130,9 +168,34 @@ public abstract class VisaConnection:IConnection,IByteCommunication, IStringComm
         return readString;
     }
 
+    public string SendAndReceivedString(string buffer, int interval)
+    {
+        ArgumentNullException.ThrowIfNull(Session, nameof(Session));
+        lock (Session)
+        {
+            Write(buffer);
+            Thread.Sleep(interval);
+            return ReadString();
+        }
+    }
+
+    public string SendAndReceivedStringByLength(string buffer, int length, int timeout = 2000)
+    {
+        ArgumentNullException.ThrowIfNull(Session, nameof(Session));
+        lock (Session)
+        {
+            Write(buffer);
+            return ReadString(length, timeout);
+        }
+    }
+
     public virtual string SendAndReceivedStringToTermination(string buffer, int timeout = 2000, char terminationCharacter = '\n')
     {
-        Write(buffer);
-        return ReadStringToTermination(timeout, terminationCharacter);
+        ArgumentNullException.ThrowIfNull(Session, nameof(Session));
+        lock (Session)
+        {
+            Write(buffer);
+            return ReadStringToTermination(timeout, terminationCharacter);
+        }
     }
 }

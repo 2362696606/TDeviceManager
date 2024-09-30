@@ -17,4 +17,13 @@ public interface IConnectionConfigRecorder : IEnumerable<ConnectionConfig>
     /// </summary>
     /// <param name="config"></param>
     void AddConfig(ConnectionConfig config);
+    /// <summary>
+    /// 移除配置
+    /// </summary>
+    /// <param name="configName">移除配置</param>
+    void RemoveConfig(string configName);
+    /// <summary>
+    /// 保存配置
+    /// </summary>
+    void SaveConfigs();
 }

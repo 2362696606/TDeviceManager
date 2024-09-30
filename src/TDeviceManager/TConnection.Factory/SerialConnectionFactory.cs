@@ -8,7 +8,7 @@ namespace TConnection.Factory
     [ConnectionType(typeof(SerialConnection))]
     public class SerialConnectionFactory:IConnectionFactory
     {
-        public IConnection CreateConnection(Dictionary<string, string> paras, bool autoConnection = false)
+        public IConnection CreateConnection(IReadOnlyDictionary<string, string> paras, bool isAutoConnection = false)
         {
             var serialConnection = new SerialConnection();
             if (paras.TryGetValue("PortName", out var portName))
@@ -39,7 +39,7 @@ namespace TConnection.Factory
                     serialConnection.Parity = parity;
                 }
             }
-            if (autoConnection)
+            if (isAutoConnection)
             {
                 serialConnection.Connect();
             }

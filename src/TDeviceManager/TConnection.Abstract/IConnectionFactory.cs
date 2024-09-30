@@ -8,7 +8,7 @@ public interface IConnectionFactory
     /// 创建连接
     /// </summary>
     /// <param name="paras"></param>
-    /// <param name="autoConnection">是否自动连接</param>
+    /// <param name="isAutoConnection">是否自动连接</param>
     /// <returns>连接对象</returns>
-    IConnection CreateConnection(Dictionary<string, string> paras,bool autoConnection = false);
+    IConnection CreateConnection(IReadOnlyDictionary<string, string> paras,bool isAutoConnection = false);
 }

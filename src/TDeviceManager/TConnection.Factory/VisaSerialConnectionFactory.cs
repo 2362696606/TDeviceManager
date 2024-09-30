@@ -11,7 +11,7 @@ namespace TConnection.Factory;
 [ConnectionType(typeof(VisaSerialConnection))]
 public class VisaSerialConnectionFactory: IConnectionFactory
 {
-    public IConnection CreateConnection(Dictionary<string, string> paras, bool autoConnection = false)
+    public IConnection CreateConnection(IReadOnlyDictionary<string, string> paras, bool isAutoConnection = false)
     {
         if ((!paras.ContainsKey("ResourceName") && (!paras.ContainsKey("PortName"))))
         {
@@ -45,7 +45,7 @@ public class VisaSerialConnectionFactory: IConnectionFactory
                 visaSerialConnection.Parity = parity;
             }
         }
-        if (autoConnection)
+        if (isAutoConnection)
         {
             visaSerialConnection.Connect();
         }

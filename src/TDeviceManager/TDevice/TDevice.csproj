@@ -10,4 +10,13 @@
     <ProjectReference Include="..\TCommon\TCommon.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentModbus" Version="5.3.0" />
+    <PackageReference Include="NModbus.Serial" Version="3.0.81" />
+  </ItemGroup>
+
 </Project>
