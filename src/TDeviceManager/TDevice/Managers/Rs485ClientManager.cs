@@ -2,29 +2,21 @@
 
 namespace TDevice.Managers;
 
-public class Rs485ClientManager
+public class Rs485ClientManager:ManagerBase<Rs485ClientManager,SerialPort>
 {
-    #region 单例实现
+    
 
-    private static Lazy<Rs485ClientManager> _instanceLazy = new Lazy<Rs485ClientManager>(() => new Rs485ClientManager());
-    /// <summary>
-    /// 单例
-    /// </summary>
-    public static Rs485ClientManager Instance => _instanceLazy.Value;
+    //#region 私有构造
 
-    #endregion
-
-    #region 私有构造
-
-    private Rs485ClientManager()
-    {
+    //private Rs485ClientManager()
+    //{
         
-    }
+    //}
 
-    #endregion
+    //#endregion
 
-    /// <summary>
-    /// 连接字典
-    /// </summary>
-    public Dictionary<string, SerialPort> Clients { get; set; } = new();
+    ///// <summary>
+    ///// 连接字典
+    ///// </summary>
+    //public Dictionary<string, SerialPort> Clients { get; set; } = new();
 }

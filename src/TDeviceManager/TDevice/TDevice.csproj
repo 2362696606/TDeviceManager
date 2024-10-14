@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	  <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,12 +13,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\" />
+    <PackageReference Include="FluentModbus" Version="5.3.0" />
+    <PackageReference Include="NModbus.Serial" Version="3.0.81" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentModbus" Version="5.3.0" />
-    <PackageReference Include="NModbus.Serial" Version="3.0.81" />
+    <None Update="Lib\zlgcan_x64\zlgcan.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -48,6 +48,12 @@ public static class Rs485ClientManagerExtension
 
         return manager.Clients.Remove(connectionName);
     }
+    /// <summary>
+    /// 获取连接
+    /// </summary>
+    /// <param name="manager">管理器对象</param>
+    /// <param name="connectionName">连接名</param>
+    /// <returns>连接对象</returns>
     public static SerialPort GetConnection(this Rs485ClientManager manager, string connectionName)
     {
         manager.Clients.TryGetValue(connectionName, out var connection);
