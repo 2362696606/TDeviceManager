@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Connection\ZlgObsolete\**" />
+    <EmbeddedResource Remove="Connection\ZlgObsolete\**" />
+    <None Remove="Connection\ZlgObsolete\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TCommon\TCommon.csproj" />
   </ItemGroup>
 
