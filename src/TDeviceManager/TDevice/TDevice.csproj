@@ -29,4 +29,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Connection\Zlg\" />
+  </ItemGroup>
+
 </Project>
